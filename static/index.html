@@ -5,7 +5,6 @@
 <script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3.layout.cloud.js"></script>
 <script type="text/javascript">
 	function loadJSON (url) {
-		// console.log(url)
 		if(!url){
 			alert("Input Field Empty");
 			return null;
@@ -14,14 +13,11 @@
 		if(window.XMLHttpRequest){
 			xmlhttp.overrideMimeType("application/json");
 		}
-		xmlhttp.open('GET', url, false); //open, send, responseText are4
-		// console.log(xmlhttp.status);
+		xmlhttp.open('GET', url, false);
 		try{
-			xmlhttp.send(); //properties of XMLHTTPRequest
-			// console.log(xmlhttp.status);
+			xmlhttp.send();
 		}
 		catch(Exception){
-			// console.log(Exception);
 			alert("File Not Found");
 			return null;
 		}
@@ -37,13 +33,9 @@
 	category_set = new Set();
 	ip = "";
 	
-	
 	function add_options_to_select(id, value_list, id_list){
 		var select = document.getElementById(id);
 		var opt = document.createElement("option");
-		// console.log(value_list);
-		// console.log(id_list);
-		// console.log(">>", value_list);
 		select.innerHTML = "";
 		opt.innerHTML = "all";
 		select.appendChild(opt);
@@ -52,18 +44,14 @@
 			opt = document.createElement("option");
 			opt.setAttribute("value", id_list[i]);
 			opt.innerHTML = value_list[i];
-			// console.log(opt.innerHTML);
 			select.appendChild(opt);
 		}
-		// return "sucess"
 	}
 
 	function main(){
-		// console.log(source_list);
 		ip = "/get_source_list"
 		var source_list = xmlhttp.open("GET", ip, false);
 		xmlhttp.send();
-		// console.log(xmlhttp.responseText);
 		source_list = JSON.parse(xmlhttp.responseText);
 		source_set = new Array();
 		source_id_set = new Array();
@@ -73,8 +61,6 @@
 			source_id_set.push(source_list[i].id);
 		}
 		add_options_to_select("source", source_set, source_id_set);
-		// var x = document.getElementsByClassName("everything")[0];
-		// x.style.display = "none";
 	}
 
 	function filter_json(news_json, max_articles){
@@ -109,7 +95,6 @@
 				continue;
 			}
 			res.push(news_json[i]);
-			console.log("passed",news_json[i]);
 			count++;
 			if(count > max_articles)
 				break;
@@ -130,8 +115,6 @@
 		from_date = document.send_search_form.from_date.value;
 		to_date = document.send_search_form.to_date.value;
 		keyword = document.send_search_form.searchbox.value;
-		// console.log(from_date);
-		// console.log(to_date);
 		if(keyword.length == 0){
 			alert("Enter a Keyword to search");
 			document.send_search_form.searchbox.focus();
@@ -174,15 +157,9 @@
 			return;
 		}
 		news = news.articles;
-		// console.log(news.length);
-		// console.log("every news");
 		news = filter_json(news, 14);
-		// console.log("done");
 		main_news = document.getElementById("print_news");
 		hidden_news = document.createElement("div");
-		hidden_news.id = "expandedPage";
-		// hidden_news.innerHTML = "";
-		// main_news.innerHTML = "";
 		hidden_news.style.display = "none";
 		count_articles = 0;
 		for(var i=0;i<news.length;i++){
@@ -192,10 +169,7 @@
 			new_news.className = "news";
 			var news_image_div = document.createElement("div");
 			var news_image = document.createElement("img");
-			// console.log(news[i].urlToImage == null, news[i].author == null || news[i].description ==null || news[i].url == null)
 			news_image.src = news[i].urlToImage;
-			// news_image.style.height = "100p";
-			// console.log(news[i].description);
 			news_image_div.appendChild(news_image);
 			news_image_div.className = "column left";
 			new_news.appendChild(news_image_div);
@@ -242,13 +216,10 @@
 			news_border.className = "news_border";
 			var news_image_div = document.createElement("div");
 			var news_image = document.createElement("img");
-			// console.log(news[i].urlToImage == null, news[i].author == null || news[i].description ==null || news[i].url == null)
 			news_image.src = news[i].urlToImage;
-			// console.log(news[i].urlToImage);
 			news_image_div.appendChild(news_image);
 			news_image_div.className = "column left";
 			news_border.appendChild(news_image_div);
-
 			var news_text_div = document.createElement("div");
 			news_text_div.className = "column right";
 			var txt = "<div style=\"float: right;cursor:pointer;\" onclick=\"minimize_card("+i+");\">&#10005;</div>";
@@ -261,7 +232,6 @@
 			txt += "<a href=\""+news[i].url+"\" target=\"_blank\"> See Original Post </a>";
 			news_text_div.innerHTML = txt;
 			news_border.appendChild(news_text_div);
-			// news_border.setAttribute("onclick", "minimize_card("+i+")");
 			news_border.style.display = "none";
 			news_border.id = i;
 			if(i<5){
@@ -270,8 +240,6 @@
 			else{
 				hidden_news.appendChild(news_border);
 			}
-			// count_articles ++;
-			console.log("done",i);
 		}
 		var div = document.createElement("div");
 		div.id = "show_less";
@@ -285,7 +253,6 @@
 	}
 
 	function filterSource(cur){
-		// console.log(cur.value);
 		source = document.getElementById("source");
 		source.options.length = 0;
 		var opt = document.createElement("option");
@@ -299,15 +266,12 @@
 		ip = "filter_source?category="+cur.value;
 		var sc = xmlhttp.open('GET', ip, false);
 		xmlhttp.send();
-		// console.log(xmlhttp.responseText);
 		sc = JSON.parse(xmlhttp.responseText);
 		sc = sc.sources;
-		// console.log(sc.length);
 		source_set = new Array();
 		source_id_set = new Array();
 		max_list = sc.length < 10? sc.length:10;
 		for (var i=0;i<max_list;i++){
-			// console.log(source_list[i].category, cur.value);
 			source_set.push(sc[i].name);
 			source_id_set.push(sc[i].id);
 		}
@@ -318,7 +282,6 @@
 		var curr = document.getElementById('news');
 		curr.className = "active";
 		curr.nextElementSibling.className = "";
-
 		var div_form = document.getElementsByClassName("everything")[0];
 		div_form.style.display = "none";
 		var div_news = document.getElementsByClassName("top_headlines")[0];
@@ -336,8 +299,6 @@
 		fox_news = JSON.parse(xmlhttp.responseText);
 		fox_news = fox_news.articles;
 		fox_news = filter_json(fox_news, 3);
-		// console.log(fox_news);
-
 		ip = "get_top_headline_source?source=";
 		var top_headline = xmlhttp.open("GET", ip, false);
 		xmlhttp.send();
@@ -374,45 +335,32 @@
 		var myWords = JSON.parse(xmlhttp.responseText);
 		console.log(myWords);
 		myWords = myWords.words;
-		// console.log(my)
 		rmax = myWords[0].size;
 		rmin = myWords[myWords.length-1].size;
 		tmax = 40;
 		tmin = 10;
 		for(var i=0;i<myWords.length;i++){
-			// console.log(myWords[i].word);
 			myWords[i].size = (((myWords[i].size-rmin)/(rmax-rmin))*(tmax-tmin))+tmin;
 		}
-		// console.log(myWords);
 		document.getElementById("wordcloud").innerHTML = "";
-		// var word_carousel = document.getElementsByClassName("carousel_wordcloud")[0].style.width;
-		// var myWords = [{word: "Running", size: "10"}, {word: "Surfing", size: "20"}, {word: "Climbing", size: "50"}, {word: "Kiting", size: "30"}, {word: "Sailing", size: "20"}, {word: "Snowboarding", size: "60"}, {word: "Cricket", size: "40"}, {word: "Football", size: "5"}, {word: "Badminton", size: "50"}]
-// set the dimensions and margins of the graph
+		
 		var margin = {top: 0, right: 0, bottom: 0, left: 0},
 			width = 350 - margin.left - margin.right,
 			height = 280 - margin.top - margin.bottom;
-
-		// append the svg object to the body of the page
 		var svg = d3.select("#wordcloud").append("svg")
 			.attr("width", width + margin.left + margin.right)
 			.attr("height", height + margin.top + margin.bottom)
 		  .append("g")
 			.attr("transform",
 				  "translate(" + margin.left + "," + margin.top + ")");
-
-		// Constructs a new cloud layout instance. It run an algorithm to find the position of words that suits your requirements
-		// Wordcloud features that are different from one word to the other must be here
 		var layout = d3.layout.cloud()
 		  .size([width, height])
 		  .words(myWords.map(function(d) { return {text: d.word, size:d.size}; }))
-		  .padding(10)        //space between words
+		  .padding(10)
 		  .rotate(function() { return ~~(Math.random() * 2) * 90; })
-		  .fontSize(function(d) { return d.size; })      // font size of words
+		  .fontSize(function(d) { return d.size; })
 		  .on("end", draw);
 		layout.start();
-
-		// This function takes the output of 'layout' above and draw the words
-		// Wordcloud features that are THE SAME from one word to the other can be here
 		function draw(words) {
 		  svg
 			.append("g")
@@ -502,8 +450,6 @@
 		current_date = dt.getDate();
 		current_month = dt.getMonth() + 1;
 		current_year = dt.getFullYear();
-
-		// Add 0 before date, month, hrs, mins or secs if they are less than 0
 		current_date = current_date < 10 ? '0' + current_date : current_date;
 		current_month = current_month < 10 ? '0' + current_month : current_month;
 		current_datetime = current_year + '-' + current_month + '-' + current_date;
@@ -517,7 +463,6 @@
 		var d = new Date();
 		console.log("Date: "+d);
 		d.setDate(d.getDate()-7);
-		// console.log
 		document.send_search_form.to_date.value = get_todays_date(new Date());
 		document.send_search_form.from_date.value = get_todays_date(d);
 		var div_form = document.getElementsByClassName("everything")[0];
@@ -530,9 +475,7 @@
 		source_list = JSON.parse(xmlhttp.responseText);
 		source_set = new Array();
 		source_id_set = new Array();
-
 		source_list = source_list.sources;
-
 		for(var i=0;i<10;i++){
 			source_set.push(source_list[i].name);
 			source_id_set.push(source_list[i].id);
@@ -544,24 +487,18 @@
 	function expandcard(cur){
 		cur.style.display = "none";
 		cur.nextElementSibling.style.display = "block";
-		// console.log(cur.nextElementSibling);
-
 	}
 
 	function show_more(id){
 		var cur = document.getElementById(id);
 		cur.style.display = "none";
 		cur.nextElementSibling.style.display = "block";
-		// console.log(cur.nextElementSibling);
-
 	}
 
 	function minimize_card(id){
 		cur = document.getElementById(id);
 		cur.style.display = "none";
-		// console.log("hello");
 		cur.previousElementSibling.style.display = "block";
-		// console.log(cur);
 	}
 
 	var slideIndex = 0;
@@ -574,7 +511,7 @@
 		slideIndex++;
 		if (slideIndex > slides.length) {slideIndex = 1}    
 		slides[slideIndex-1].style.display = "block";
-		setTimeout(showSlides, 4000); // Change image every 2 seconds
+		setTimeout(showSlides, 4000);
 	}
 	function clearPage(){
 		document.getElementById("print_news").innerHTML = "";
@@ -589,9 +526,7 @@
 		source_list = JSON.parse(xmlhttp.responseText);
 		source_set = new Array();
 		source_id_set = new Array();
-
 		source_list = source_list.sources;
-
 		for(var i=0;i<10;i++){
 			source_set.push(source_list[i].name);
 			source_id_set.push(source_list[i].id);
@@ -666,8 +601,8 @@
 
 	.main {
 		margin-top:40px;
-		margin-left: 250px; /* Same width as the sidebar + left position in px */
-		font-size: 15px; /* Increased text to enable scrolling */
+		margin-left: 250px;
+		font-size: 15px;
 	}
 	.main_page{
 		width: 90%;
@@ -676,7 +611,6 @@
 	}
 	.content{
 		max-width: 700px;
-		/*box-shadow: 2px 4px #888888;*/
 		height: auto;
 	}
 	.news {
@@ -708,18 +642,14 @@
 		border: 1px solid #adbab4;
 		margin-left: 15px;
 		margin-right: 15px;
-		/*box-shadow: 2px 4px #888888;*/
 		border-radius: 10px;
 		height: auto;
 		margin-bottom: 10px;
 		background-color: #f4f4f4;
-		/*height: 0px;*/
 	}
 
 	.news_border:hover {
 		box-shadow: 4px 4px #888888;
-
-		/*height: 0px;*/
 	}
 
 	.news_border:after {
@@ -737,8 +667,6 @@
 	.column {
 		float: left;
 		padding: 10px;
-		/*background-color: #f7f7f7;;*/
-		/*height: 300px;  Should be removed. Only for demonstration */
 	}
 
 	.column img{
@@ -916,20 +844,15 @@
 					<div class="slideshow-container">
 					</div>
 					<div id="wordcloud">
-						<!-- <img src="https://cdn.cnn.com/cnnnext/dam/assets/200305152039-jordan-osu-wrestlers-strauss-invs-super-tease.jpg"> -->
 					</div>
 				</div>
 				<br><br>
 				<div id="cnn">
-					<!-- <p><b> CNN </b></p> -->
-					<!-- <hr> -->
 				</div>
 				<br>
 				<br>
 				<br>	
 				<div id="fox">
-					<!-- <p><b> Fox News </b></p>
-					<hr> -->
 				</div>
 			</div>
 			<div class="everything">

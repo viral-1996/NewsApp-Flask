@@ -9,6 +9,10 @@ newsapi = NewsApiClient(api_key='API_KEY')
 
 @application.route('/get_top_headline_source')
 def get_news_from_source():
+	'''
+	Input - 
+	Fetches top headlines from Google news API and returns JSON to frontend (JavaScript)
+	'''
 	source = request.args.get('source', None)
 	if source == None:
 		top_headlines = newsapi.get_top_headlines(page_size=10, country="us")
@@ -19,25 +23,31 @@ def get_news_from_source():
 
 @application.route('/filter_source/')
 def get_filtered_sources():
+	'''
+	Input - Category: string(passed via API Call)
+	Fetches filtered source List based on the category and returns JSON
+	'''
 	category = request.args['category']
 	filtered_source = newsapi.get_sources(category=category, language="en", country="us")
 	return json.dumps(filtered_source, indent=4)
 
 @application.route('/get_source_list')
 def get_source_list():
+	'''
+	Input - 
+	Fetches source List and returns JSON
+	'''
 	sources = newsapi.get_sources(language="en", country="us")
 	print(sources)
 	return json.dumps(sources, indent=4)
 
-@application.route('/')
-def root():
-	try:
-		return application.send_static_file('index.html')
-	except Exception as e:
-		print(e)
 
 @application.route("/get_frequent_words")
 def get_frequent_words():
+	'''
+	Input - 
+	Generates a list of frequent words from article titles and returns JSON format of it
+	'''
 	stop_words = set(line.strip() for line in open('static/stopwords_en.txt'))
 	stop_words = stop_words.union(set(string.punctuation))
 	stop_words.add("—")
@@ -47,7 +57,8 @@ def get_frequent_words():
 	titles = [x['title'] for x in top_articles if x['title'] is not None]
 	for title in titles:
 		words = title.split(" ")
-		words = [''.join(c for c in word if c not in string.punctuation) for word in words if not word.isdigit()]
+		words = [''.join(c for c in word if c not in string.punctuation)
+					for word in words if not word.isdigit()]
 		words = [word for word in words if word.lower() not in stop_words]
 		for word in words:
 			if word:
@@ -69,6 +80,10 @@ def get_frequent_words():
 
 @application.route('/news', methods=['GET', 'POST'])
 def get_news():
+	'''
+	Input - 
+	Fetches newsArticles from Google News API and returns a JSON to frontend(JavaScript)
+	'''
 	keyword = request.args.get("keyword", "")
 	category = request.args.get("category", "")
 	from_date = request.args.get("from_date", "")
@@ -77,11 +92,24 @@ def get_news():
 	sources = None if sources == "all" else sources
 	category = None if category == "all" else category
 	try:
-		keyword_news = newsapi.get_everything(q=keyword, sources=sources, from_param=from_date, to=to_date, language='en', page_size=30, sort_by="publishedAt")
+		keyword_news = newsapi.get_everything(q=keyword,
+			sources=sources, from_param=from_date, to=to_date,
+			language='en', page_size=30, sort_by="publishedAt")
 	except Exception as e:
 		error = json.loads(str(e).replace("'", "\""))
 		return json.dumps(error)
 	return json.dumps(keyword_news, indent=4)
+
+@application.route('/')
+def root():
+	'''
+	Input - 
+	Main handler for flask that returns the HTML page which handles the API calls
+	'''
+	try:
+		return application.send_static_file('index.html')
+	except Exception as e:
+		print(e)
 
 if __name__ == '__main__':
 	application.run(host="0.0.0.0")
